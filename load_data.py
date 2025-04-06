@@ -39,7 +39,7 @@ def PDFLoader(pdf_files):
 # Uncomment if CSV is used.
 url_list = CSVFileLoader(file_paths=["CSVs/data.csv"])
 
-llm = ChatOllama(model="deepseek-r1:1.5b")
+llm = ChatOllama(model="mistral")
 
 text_splitter = RecursiveCharacterTextSplitter(
     chunk_size=500,

@@ -3,25 +3,48 @@ import os
 from langchain.chains import RetrievalQA
 from langchain.chat_models import ChatOllama
 from langchain.memory import ConversationBufferMemory
-from langchain.prompts import PromptTemplate
 from langchain_ollama.embeddings import OllamaEmbeddings
-from langchain_community.vectorstores import Chroma, Milvus, MongoDBAtlasVectorSearch, ElasticVectorSearch
-
-import os
+from langchain_community.vectorstores import Chroma
 from dotenv import load_dotenv
 
 load_dotenv()
 
+# ---- Page config ---- #
+st.set_page_config(page_title="Bionova Chatbot", layout="wide")
 
-# ---- Streamlit UI ---- #
-st.set_page_config(layout="wide")
+# ---- Custom Styling ---- #
+st.markdown("""
+    <style>
+        .block-container {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+        .stChatMessage {
+            border-radius: 12px !important;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+        }
+        .stChatMessage.user {
+            background-color: #e8f5e9;
+            text-align: right;
+        }
+        .stChatMessage.assistant {
+            background-color: #f1f8e9;
+        }
+        footer {visibility: hidden;}
+        header {visibility: hidden;}
+        .css-1y4p8pa {display: none;} /* Hide sidebar if user tries to reopen */
+    </style>
+""", unsafe_allow_html=True)
+
+# ---- Title ---- #
 st.title("🌳 Bionova Chatbot")
-st.caption("🚀 A Streamlit chatbot powered by DeepSeek")
+st.caption("💬 An intelligent assistant powered by Ollama + LangChain")
 
-st.sidebar.header("Settings")
-MODEL = st.sidebar.selectbox("Choose a Model", ["deepseek-r1:1.5b"], index=0)
-MAX_HISTORY = st.sidebar.number_input("Max History", 1, 10, 2)
-CONTEXT_SIZE = st.sidebar.number_input("Context Size", 1024, 16384, 8192, step=1024)
+# ---- Fixed Config ---- #
+MODEL = "mistral"
+MAX_HISTORY = 3
+CONTEXT_SIZE = 8192
 
 # ---- Session State Setup ---- #
 if "chat_history" not in st.session_state:
@@ -33,28 +56,22 @@ if "memory" not in st.session_state or st.session_state.get("prev_context_size")
 # ---- LangChain Components ---- #
 llm = ChatOllama(model=MODEL, streaming=True)
 embeddings = OllamaEmbeddings(model="nomic-embed-text")
-
-
-# Initialize Chroma vector store
 vectorstore = Chroma(persist_directory="./chroma_db", embedding_function=embeddings)
-
 retriever = vectorstore.as_retriever(search_type="similarity")
-qa = RetrievalQA.from_chain_type(llm=llm, chain_type="stuff", retriever=retriever, return_source_documents=True)
+qa = RetrievalQA.from_chain_type(llm=llm, chain_type="map_reduce", retriever=retriever, return_source_documents=True)
 
-# ---- Display Chat History ---- #
+# ---- Chat History Display ---- #
 for msg in st.session_state.chat_history:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
-
-# ---- Trim Chat Memory ---- #
+# ---- Memory Trim ---- #
 def trim_memory():
     while len(st.session_state.chat_history) > MAX_HISTORY * 2:
-        st.session_state.chat_history.pop(0)  # Remove oldest messages
+        st.session_state.chat_history.pop(0)
 
-
-# ---- Handle User Input ---- #
-if prompt := st.chat_input("Say something"):
+# ---- Chat Input ---- #
+if prompt := st.chat_input("Ask me your question here…"):
     st.session_state.chat_history.append({"role": "user", "content": prompt})
 
     with st.chat_message("user"):
@@ -64,15 +81,13 @@ if prompt := st.chat_input("Say something"):
 
     with st.chat_message("assistant"):
         response_container = st.empty()
-
-        # Retrieve relevant documents
         retrieved_docs = retriever.get_relevant_documents(prompt)
+        
         full_response = (
-            "No relevant documents found." if not retrieved_docs
-            else qa({"query": prompt}).get("result", "No response generated.")
+            "❌ No relevant documents found." if not retrieved_docs
+            else qa({"query": prompt}).get("result", "🤖 No answer generated.")
         )
 
         response_container.markdown(full_response)
         st.session_state.chat_history.append({"role": "assistant", "content": full_response})
-
         trim_memory()
