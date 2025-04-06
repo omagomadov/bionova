@@ -58,7 +58,7 @@ llm = ChatOllama(model=MODEL, streaming=True)
 embeddings = OllamaEmbeddings(model="nomic-embed-text")
 vectorstore = Chroma(persist_directory="./chroma_db", embedding_function=embeddings)
 retriever = vectorstore.as_retriever(search_type="similarity")
-qa = RetrievalQA.from_chain_type(llm=llm, chain_type="map_reduce", retriever=retriever, return_source_documents=True)
+qa = RetrievalQA.from_chain_type(llm=llm, chain_type="stuff", retriever=retriever, return_source_documents=True)
 
 # ---- Chat History Display ---- #
 for msg in st.session_state.chat_history:
