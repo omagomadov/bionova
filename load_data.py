@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-urls = ["https://energy.ec.europa.eu/topics/renewable-energy/bioenergy/biomass_en","https://energy.ec.europa.eu/topics/renewable-energy/bioenergy/biomass_en"]
+urls = [""]
 
 
 def WebsiteLoader(urls):
@@ -26,8 +26,6 @@ def CSVFileLoader(file_paths):
         docs.extend(loader.load())  # Append loaded data to the list
     return docs
 
-
-
 def PDFLoader(pdf_files):
     docs = []
     for pdf_file in pdf_files:
@@ -35,13 +33,13 @@ def PDFLoader(pdf_files):
         docs.extend(loader.load())  # Append loaded data to the list
     return docs
 
+# Uncomment if website scraping is done.
+# url_list = WebsiteLoader(urls)
 
+# Uncomment if CSV is used.
+url_list = CSVFileLoader(file_paths=["CSVs/data.csv"])
 
-url_list = WebsiteLoader(urls)
-
-
-
-llm = ChatOllama(model="llama3.2" )
+llm = ChatOllama(model="deepseek-r1:1.5b")
 
 text_splitter = RecursiveCharacterTextSplitter(
     chunk_size=500,
@@ -49,7 +47,6 @@ text_splitter = RecursiveCharacterTextSplitter(
     length_function=len,
     is_separator_regex=False,
 )
-
 
 # Combine all loaded documents
 all_documents = url_list
@@ -59,7 +56,7 @@ print(splited_documents)
 
 
 embeddings  = OllamaEmbeddings(
-  model='deepseek-r1'
+  model='nomic-embed-text'
 )
 persist_directory = "./chroma_db"
 

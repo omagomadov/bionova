@@ -15,10 +15,11 @@ load_dotenv()
 
 # ---- Streamlit UI ---- #
 st.set_page_config(layout="wide")
-st.title("My Local Chatbot")
+st.title("🌳 Bionova Chatbot")
+st.caption("🚀 A Streamlit chatbot powered by DeepSeek")
 
 st.sidebar.header("Settings")
-MODEL = st.sidebar.selectbox("Choose a Model", ["llama3.2", "deepseek-r1:1.5b"], index=0)
+MODEL = st.sidebar.selectbox("Choose a Model", ["deepseek-r1:1.5b"], index=0)
 MAX_HISTORY = st.sidebar.number_input("Max History", 1, 10, 2)
 CONTEXT_SIZE = st.sidebar.number_input("Context Size", 1024, 16384, 8192, step=1024)
 
@@ -31,7 +32,7 @@ if "memory" not in st.session_state or st.session_state.get("prev_context_size")
 
 # ---- LangChain Components ---- #
 llm = ChatOllama(model=MODEL, streaming=True)
-embeddings = OllamaEmbeddings(model="mxbai-embed-large")
+embeddings = OllamaEmbeddings(model="nomic-embed-text")
 
 
 # Initialize Chroma vector store

@@ -5,3 +5,4 @@ ollama
 langchain_ollama
 langchain_community
 bs4
+langchain_text_splitters
