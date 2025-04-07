@@ -25,27 +25,43 @@ Get started in no time by following these steps:
     pip install -r requirements.txt
     ```
 
-4. **Download the required LLM**:
+4. **Run make**:
+    ```bash
+    make
+    ```
+
+5. **Download the required LLM**:
     Use [Ollama](https://ollama.com) to download the necessary language model. For this project, it is recommended to use the **Mistral** model:
     ```bash
     ollama pull mistral
     ```
 
-5. **Start the Ollama service**:
+6. **Start the Ollama service**:
     Launch the Ollama service by running:
     ```bash
     ollama serv
     ```
 
-6. **Launch the application**:  
+7. **Launch the application**:  
     Run the following command to start the app on your localhost:
     ```bash
     streamlit run app.py
     ```
     Open your browser and navigate to the provided URL to access the application.
 
-## 📜 License
+    ## 🌳 Project Structure
 
-This project is licensed under the **MIT License**. You are free to use, modify, and distribute this software as long as proper attribution is given. See the [LICENSE](LICENSE) file for more details.
+    Below is the directory structure of the project:
+
+    ```
+    bionova-project/
+    ├── CSVs
+    │   └── data.csv
+    ├── Makefile
+    ├── README.md
+    ├── app.py
+    ├── load_data.py
+    └── requirements.txt
+    ```
 
 
