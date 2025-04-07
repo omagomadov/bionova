@@ -49,9 +49,9 @@ Get started in no time by following these steps:
     ```
     Open your browser and navigate to the provided URL to access the application.
 
-    ## 🌳 Project Structure
+## 🌳 Project Structure
 
-    Below is the directory structure of the project:
+Below is the directory structure of the project:
 
     ```
     bionova-project/
