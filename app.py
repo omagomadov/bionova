@@ -1,5 +1,4 @@
 import streamlit as st
-import os
 from langchain.chains import RetrievalQA
 from langchain.chat_models import ChatOllama
 from langchain.memory import ConversationBufferMemory

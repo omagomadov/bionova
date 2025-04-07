@@ -1,19 +1,13 @@
-import getpass
-import os
-
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_ollama.chat_models import ChatOllama
 from langchain_community.vectorstores import Chroma
 from langchain_ollama.embeddings import OllamaEmbeddings
-from langchain_community.document_loaders import WebBaseLoader, CSVLoader, JSONLoader, PyPDFLoader
+from langchain_community.document_loaders import WebBaseLoader, CSVLoader, PyPDFLoader
 
-import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
 urls = [""]
-
 
 def WebsiteLoader(urls):
     loader = WebBaseLoader(urls)

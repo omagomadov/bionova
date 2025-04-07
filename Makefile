@@ -1,26 +1,15 @@
-# Makefile pour automatiser les tâches
+.PHONY: clean all load run
 
-# Variables
 PYTHON = python3
 STREAMLIT = streamlit
-DB_FILE = path/to/your/database.db  # Remplace par le chemin de ton fichier .db
 
-# Cible par défaut
-.PHONY: all
-all: clean load_data run_app
+all: clean load
 
-# Supprimer le fichier .db avant d'exécuter d'autres tâches
-.PHONY: clean
 clean:
-	@echo "Suppression du fichier .db..."
-	rm -f $(DB_FILE)
+	rm -rf chroma_db
 
-# Charger les données
-.PHONY: load_data
-load_data:
+load:
 	$(PYTHON) load_data.py
 
-# Lancer l'application Streamlit
-.PHONY: run_app
-run_app:
+run:
 	$(STREAMLIT) run app.py
